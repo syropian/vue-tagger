@@ -1,0 +1,54 @@
+{
+  "name": "vue-tagger",
+  "version": "0.1.0",
+  "description": "Simple tagging component for Vue with built-in autocomplete.",
+  "main": "src/VueTagger.vue",
+  "dependencies": {
+    "awesomplete": "^1.1.1",
+    "fuzzysearch": "^1.0.3",
+    "lodash.differenceby": "^4.8.0"
+  },
+  "devDependencies": {
+    "ava": "^0.18.2",
+    "babel-core": "^6.24.0",
+    "babel-eslint": "^7.2.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-runtime": "^6.23.0",
+    "browser-env": "^2.0.29",
+    "eslint": "^3.19.0",
+    "eslint-config-vue": "^2.0.2",
+    "eslint-plugin-html": "^2.0.1",
+    "eslint-plugin-vue": "^2.0.1",
+    "node-sass": "^4.5.2",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-vue": "^2.3.1",
+    "sass-loader": "^6.0.3",
+    "vbuild": "^6.24.14",
+    "vue": "^2.2.6"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "test": "npm run build && ava",
+    "lint": "eslint src --ext='.js,.vue'"
+  },
+  "ava": {
+    "verbose": true,
+    "files": [
+      "tests/**/*.spec.js"
+    ],
+    "require": [
+      "babel-register",
+      "./tests/utils/setup-browser-env.js"
+    ]
+  },
+  "keywords": [
+    "vue",
+    "tags",
+    "autocomplete"
+  ],
+  "author": "Collin Henderson",
+  "license": "MIT"
+}
