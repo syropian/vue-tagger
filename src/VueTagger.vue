@@ -1,11 +1,13 @@
 <template>
 <div class="vue-tagger">
-  <span class="vue-tagger-tag" v-for="tag in visibleTags">{{ tag.name }}</span>
+  <div class="vue-tagger-tag" v-for="tag in visibleTags">
+    <span class="vue-tagger-tag-name">{{ tag.name }}</span>
+    <span class="vue-tagger-delete-tag" @click="deleteTag(tag)">&times;</span>
+  </div>
   <input class="vue-tagger-input" v-model="currentTag" @keypress="onKeypress" type="text" @keydown.delete="onDeletePressed" :placeholder="placeholder" ref="vue-tagger-input" />
 </div>
 </template>
 <script>
-import Vue from 'vue'
 import fuzzysearch from 'fuzzysearch'
 import Awesomplete from 'awesomplete'
 import differenceBy from 'lodash.differenceby'
@@ -26,7 +28,7 @@ export default {
       default: 'Enter a tag...'
     }
   },
-  data() {
+  data () {
     return {
       awesomplete: null,
       currentTag: '',
@@ -34,13 +36,13 @@ export default {
     }
   },
   computed: {
-    availableTags() {
+    availableTags () {
       return differenceBy(this.tags, this.visibleTags, 'name')
     },
-    availableTagNames() {
+    availableTagNames () {
       return this.availableTags.map(tag => tag.name)
     },
-    visibleTags() {
+    visibleTags () {
       return this.tagList.filter(tag => tag.selected)
     }
   },
@@ -48,10 +50,10 @@ export default {
     this.initAwesomplete()
   },
   watch: {
-    tags: function() {
+    tags () {
       this.awesomplete.list = this.availableTagNames
     },
-    tagList: function() {
+    tagList () {
       this.$emit('tags-changed', this.visibleTags)
       this.awesomplete.list = this.availableTagNames
     }
@@ -65,7 +67,7 @@ export default {
         },
         list: this.availableTagNames
       })
-      window.addEventListener("awesomplete-select", (e) => {
+      window.addEventListener('awesomplete-select', (e) => {
         setTimeout(() => {
           const tagName = e.text.value.trim().replace(this.delimiter, '')
           const tagIndex = this.getTagIndexByName(tagName)
@@ -79,7 +81,7 @@ export default {
             this.currentTag = ''
           }, 0)
         }, 0)
-      }, false);
+      }, false)
     },
     onKeypress (e) {
       const key = this.delimiter.charCodeAt(0)
@@ -87,8 +89,10 @@ export default {
         const tagName = this.currentTag.trim().replace(this.delimiter, '')
         const tagIndex = this.getTagIndexByName(tagName)
         if (tagIndex !== -1) {
-          this.tagList.splice(tagIndex, 1)
-          this.tagList.push({ name: tagName, selected: true })
+          if (!this.tagList[tagIndex].selected) {
+            this.tagList.splice(tagIndex, 1)
+            this.tagList.push({ name: tagName, selected: true })
+          }
         } else {
           this.tagList.push({ name: tagName, selected: true })
         }
@@ -107,12 +111,19 @@ export default {
       }
     },
     getTagIndexByName (name) {
-      return this.tagList.findIndex(tag => tag.name === name)
+      return this.tagList.findIndex(tag => tag.name.trim().toLowerCase() === name.trim().toLowerCase())
+    },
+    deleteTag (tag) {
+      const index = this.tagList.findIndex(t => t.name === tag.name)
+      this.tagList.splice(index, 1)
+      this.$refs['vue-tagger-input'].focus()
     }
   }
 }
 </script>
 <style lang="scss">
+$primary: #9558f1;
+$text: #fff;
 .vue-tagger {
   border-radius: 2px;
   border: 1px solid #ccc;
@@ -121,22 +132,27 @@ export default {
   padding: 6px 0 0 6px;
   max-width: 400px;
   min-height: 33px;
-  margin: 20px;
   &-tag {
     display: flex;
     align-items: center;
-    background: #5dc1a4;
+    background: $primary;
     border-radius: 2px;
-    color: #fff;
+    color: $text;
     font-family: 'Helvetica Neue';
     font-weight: bold;
     font-size: 11px;
-    text-transform: uppercase;
     letter-spacing: 0.02em;
-    padding: 3px 6px;
+    padding: 0 6px;
     margin-bottom: 6px;
     margin-right: 3px;
-    height: 21px;
+    height: 27px;
+  }
+  &-delete-tag {
+    cursor: pointer;
+    line-height: 1;
+    position: relative; top: -1px;
+    margin-left: 0.75em;
+    padding: 3px;
   }
   &-input {
     -webkit-appearance: none;
@@ -170,7 +186,8 @@ export default {
     position: absolute;
     left: 0;
     z-index: 1;
-    min-width: 100%;
+    min-width: 200px;
+    max-width: 200px;
     box-sizing: border-box;
     list-style: none;
     padding: 0;
@@ -201,19 +218,21 @@ export default {
 }
 
 	.awesomplete > ul > li {
+	  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans;
+    font-size: 13px;
 		position: relative;
-		padding: .2em .5em;
+		padding: .5em .5em;
 		cursor: pointer;
 	}
 
 	.awesomplete > ul > li:hover {
-		background: hsl(200, 40%, 80%);
-		color: black;
+		background: rgba($primary, 0.7);
+		color: $text;
 	}
 
 	.awesomplete > ul > li[aria-selected="true"] {
-		background: hsl(205, 40%, 40%);
-		color: white;
+		background: $primary;
+		color: $text;
 	}
 
 		.awesomplete mark {

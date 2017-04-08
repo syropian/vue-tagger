@@ -34,3 +34,8 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.vue-tagger, pre {
+  margin: 20px;
+}
+</style>
