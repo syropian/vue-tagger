@@ -1,10 +1,12 @@
 <template>
 <div class="vue-tagger">
-  <div class="vue-tagger-tag" v-for="tag in visibleTags">
+  <span class="vue-tagger-tag" v-for="(tag, index) in visibleTags" :key="tag.name">
     <span class="vue-tagger-tag-name">{{ tag.name }}</span>
     <span class="vue-tagger-delete-tag" @click="deleteTag(tag)">&times;</span>
+  </span>
+  <div class="vue-tagger-input-container">
+    <input class="vue-tagger-input" v-model="currentTag" @keypress="onKeypress" type="text" @keydown.delete.stop="onDeletePressed" :placeholder="placeholder" ref="vue-tagger-input" />
   </div>
-  <input class="vue-tagger-input" v-model="currentTag" @keypress="onKeypress" type="text" @keydown.delete="onDeletePressed" :placeholder="placeholder" ref="vue-tagger-input" />
 </div>
 </template>
 <script>
@@ -36,11 +38,8 @@ export default {
     }
   },
   computed: {
-    availableTags () {
-      return differenceBy(this.tags, this.visibleTags, 'name')
-    },
-    availableTagNames () {
-      return this.availableTags.map(tag => tag.name)
+    autocompleteList () {
+      return differenceBy(this.tags, this.visibleTags, 'name').map(tag => tag.name)
     },
     visibleTags () {
       return this.tagList.filter(tag => tag.selected)
@@ -51,11 +50,11 @@ export default {
   },
   watch: {
     tags () {
-      this.awesomplete.list = this.availableTagNames
+      this.awesomplete.list = this.autocompleteList
     },
     tagList () {
-      this.$emit('tags-changed', this.visibleTags)
-      this.awesomplete.list = this.availableTagNames
+      this.$emit('tags-changed', JSON.parse(JSON.stringify(this.visibleTags)))
+      this.awesomplete.list = this.autocompleteList
     }
   },
   methods: {
@@ -65,17 +64,17 @@ export default {
         filter (text, input) {
           return fuzzysearch(input.toLowerCase(), text.toLowerCase())
         },
-        list: this.availableTagNames
+        list: this.autocompleteList
       })
       window.addEventListener('awesomplete-select', (e) => {
         setTimeout(() => {
-          const tagName = e.text.value.trim().replace(this.delimiter, '')
+          const tagName = e.text.value.trim()
           const tagIndex = this.getTagIndexByName(tagName)
           if (tagIndex !== -1) {
             this.tagList.splice(tagIndex, 1)
-            this.tagList.push({ name: tagName, selected: true })
+            this.addTag(tagName)
           } else {
-            this.tagList.push({ name: tagName, selected: true })
+            this.addTag(tagName)
           }
           setTimeout(() => {
             this.currentTag = ''
@@ -91,10 +90,10 @@ export default {
         if (tagIndex !== -1) {
           if (!this.tagList[tagIndex].selected) {
             this.tagList.splice(tagIndex, 1)
-            this.tagList.push({ name: tagName, selected: true })
+            this.addTag(tagName)
           }
         } else {
-          this.tagList.push({ name: tagName, selected: true })
+          this.addTag(tagName)
         }
         setTimeout(() => {
           this.currentTag = ''
@@ -106,16 +105,22 @@ export default {
         const lastVisibleTag = this.tagList.filter(tag => tag.selected).pop()
         if (lastVisibleTag) {
           const index = this.tagList.findIndex(tag => tag.name === lastVisibleTag.name)
-          this.tagList.splice(index, 1)
+          this.removeTagAtIndex(index)
         }
       }
     },
     getTagIndexByName (name) {
       return this.tagList.findIndex(tag => tag.name.trim().toLowerCase() === name.trim().toLowerCase())
     },
+    addTag (name) {
+      this.tagList.push({ name: name, selected: true })
+    },
+    removeTagAtIndex (index) {
+      this.tagList.splice(index, 1)
+    },
     deleteTag (tag) {
       const index = this.tagList.findIndex(t => t.name === tag.name)
-      this.tagList.splice(index, 1)
+      this.removeTagAtIndex(index)
       this.$refs['vue-tagger-input'].focus()
     }
   }
@@ -164,6 +169,13 @@ $text: #fff;
   }
 }
 
+.vue-tagger-input-container {
+  flex-grow: 1;
+  flex-basis: 75px;
+  margin-bottom: 6px;
+  margin-right: 6px;
+}
+
 // Awesomplete Styles
 .awesomplete [hidden] {
     display: none;
@@ -176,10 +188,8 @@ $text: #fff;
 
 .awesomplete {
     display: inline-block;
-    flex-grow: 1;
+    width: 100%;
     position: relative;
-    margin-bottom: 6px;
-    margin-right: 6px;
 }
 
 .awesomplete > ul {
