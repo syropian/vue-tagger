@@ -16,7 +16,7 @@ $ npm install vue-tagger --save
 
 ## Usage
 
-_Comming soon..._
+_Coming soon..._
 
 ## License
 
