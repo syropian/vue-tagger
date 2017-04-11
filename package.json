@@ -31,8 +31,10 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "test": "npm run build && ava",
-    "lint": "eslint src --ext='.js,.vue'"
+    "build:example": "vbuild ./example/index.js",
+    "lint": "eslint src --ext='.js,.vue'",
+    "serve": "vbuild ./example/index.js --dev",
+    "test": "npm run build && ava"
   },
   "ava": {
     "verbose": true,

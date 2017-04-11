@@ -50,10 +50,11 @@ export default {
   },
   watch: {
     tags () {
+      this.tagList = [].concat(this.tags)
       this.awesomplete.list = this.autocompleteList
     },
     tagList () {
-      this.$emit('tags-changed', JSON.parse(JSON.stringify(this.visibleTags)))
+      this.$emit('tags-changed', JSON.parse(JSON.stringify(this.visibleTags)).map(tag => tag.name))
       this.awesomplete.list = this.autocompleteList
     }
   },
@@ -69,13 +70,7 @@ export default {
       window.addEventListener('awesomplete-select', (e) => {
         setTimeout(() => {
           const tagName = e.text.value.trim()
-          const tagIndex = this.getTagIndexByName(tagName)
-          if (tagIndex !== -1) {
-            this.tagList.splice(tagIndex, 1)
-            this.addTag(tagName)
-          } else {
-            this.addTag(tagName)
-          }
+          this.addTag(tagName)
           setTimeout(() => {
             this.currentTag = ''
           }, 0)
@@ -86,15 +81,7 @@ export default {
       const key = this.delimiter.charCodeAt(0)
       if (e.which === key) {
         const tagName = this.currentTag.trim().replace(this.delimiter, '')
-        const tagIndex = this.getTagIndexByName(tagName)
-        if (tagIndex !== -1) {
-          if (!this.tagList[tagIndex].selected) {
-            this.tagList.splice(tagIndex, 1)
-            this.addTag(tagName)
-          }
-        } else {
-          this.addTag(tagName)
-        }
+        this.addTag(tagName)
         setTimeout(() => {
           this.currentTag = ''
         }, 0)
@@ -113,7 +100,13 @@ export default {
       return this.tagList.findIndex(tag => tag.name.trim().toLowerCase() === name.trim().toLowerCase())
     },
     addTag (name) {
-      this.tagList.push({ name: name, selected: true })
+      const tagIndex = this.getTagIndexByName(name)
+      if (tagIndex !== -1) {
+        this.tagList.splice(tagIndex, 1)
+        this.tagList.push({ name: name, selected: true })
+      } else {
+        this.tagList.push({ name: name, selected: true })
+      }
     },
     removeTagAtIndex (index) {
       this.tagList.splice(index, 1)

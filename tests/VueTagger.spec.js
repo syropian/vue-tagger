@@ -36,28 +36,51 @@ test('It should compute a list of visible tags', t => {
 
 test('It can find a tag\'s index by name', t => {
 	const index = vm.getTagIndexByName('Ruby')
-  t.is(1, index)
+  t.is(index, 1)
 });
 
 test('It can add a new tag', t => {
 	vm.addTag('Scala')
-  t.is(6, vm.tagList.length)
+  t.is(vm.tagList.length, 6)
+});
+
+test('It shouldn\'t add duplicate tags', t => {
+	vm.addTag('Ruby')
+	vm.addTag('javascript')
+  t.is(vm.tagList.length, 5)
 });
 
 test('It can remove a tag by index', t => {
 	vm.removeTagAtIndex(1)
   t.is(4, vm.tagList.length)
-	t.deepEqual(-1, vm.getTagIndexByName('Ruby'))
+	t.is(vm.getTagIndexByName('Ruby'), -1)
 });
 
 test('It can remove a tag by reference', t => {
 	vm.deleteTag(vm.tagList[1])
   t.is(4, vm.tagList.length)
-	t.deepEqual(-1, vm.getTagIndexByName('Ruby'))
+	t.is(vm.getTagIndexByName('Ruby'), -1)
 });
 
 test('It deletes the last visible tag when the delete key is pressed', t => {
 	vm.onDeletePressed()
   t.is(4, vm.tagList.length)
-	t.deepEqual(-1, vm.getTagIndexByName('Crystal'))
+	t.is(vm.getTagIndexByName('Crystal'), -1)
+});
+
+test('It updates the tag list when the parent tags property changes', t => {
+	const newTags = [
+		{ name: 'Java', selected: true },
+		{ name: 'Haskell', selected: false },
+		{ name: 'Scala', selected: true },
+		{ name: 'Elixir', selected: true },
+		{ name: 'Elm', selected: false }
+	]
+	vm.$props.tags = newTags
+
+	Vue.nextTick(() => {
+		t.is(vm.getTagIndexByName('Haskell'), 1)
+		t.is(vm.getTagIndexByName('Crystal'), -1)
+		t.deepEqual(vm.tagList, newTags)
+	})
 });

@@ -2,6 +2,7 @@
   <div id="app">
     <vue-tagger :tags="tags" @tags-changed="setCurrentTags"></vue-tagger>
     <pre><code>{{ currentTagsToJson }}</code></pre>
+    <button @click="changeTags">Change Tags</button>
   </div>
 </template>
 <script>
@@ -30,6 +31,15 @@ export default {
   methods: {
     setCurrentTags (tags) {
       this.currentTags = tags
+    },
+    changeTags () {
+      this.tags = [
+        { name: 'Java', selected: true },
+        { name: 'Haskell', selected: false },
+        { name: 'Scala', selected: true },
+        { name: 'Elixir', selected: true },
+        { name: 'Elm', selected: false }
+      ]
     }
   }
 }
