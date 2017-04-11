@@ -120,16 +120,19 @@ export default {
 }
 </script>
 <style lang="scss">
-$primary: #9558f1;
+$primary: #708EA3;
 $text: #fff;
 .vue-tagger {
-  border-radius: 2px;
-  border: 1px solid #ccc;
+  background: #fcfcfc;
+  background-clip: padding-box;
+  border-radius: 3px;
+  border: 1px solid rgba(#000, 0.15);
+  box-shadow: inset 0 1px 2px rgba(#000, 0.1);
   display: flex;
   flex-wrap: wrap;
   padding: 6px 0 0 6px;
   max-width: 400px;
-  min-height: 33px;
+  min-height: 32px;
   &-tag {
     display: flex;
     align-items: center;
@@ -143,7 +146,7 @@ $text: #fff;
     padding: 0 6px;
     margin-bottom: 6px;
     margin-right: 3px;
-    height: 27px;
+    height: 26px;
   }
   &-delete-tag {
     cursor: pointer;
@@ -152,21 +155,21 @@ $text: #fff;
     margin-left: 0.75em;
     padding: 3px;
   }
+  &-input-container {
+    flex-grow: 1;
+    flex-basis: 75px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+    height: 26px;
+  }
   &-input {
     -webkit-appearance: none;
     appearance: none;
     border: none;
+    height: 100%;
     outline: none;
-    height: 27px;
     width: 100%;
   }
-}
-
-.vue-tagger-input-container {
-  flex-grow: 1;
-  flex-basis: 75px;
-  margin-bottom: 6px;
-  margin-right: 6px;
 }
 
 // Awesomplete Styles
@@ -181,7 +184,7 @@ $text: #fff;
 
 .awesomplete {
     display: inline-block;
-    width: 100%;
+    width: 100%; height: 100%;
     position: relative;
 }
 
