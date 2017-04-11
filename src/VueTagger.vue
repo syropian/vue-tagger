@@ -54,7 +54,7 @@ export default {
       this.awesomplete.list = this.autocompleteList
     },
     tagList () {
-      this.$emit('tags-changed', JSON.parse(JSON.stringify(this.visibleTags)).map(tag => tag.name))
+      this.$emit('change', JSON.parse(JSON.stringify(this.visibleTags)).map(tag => tag.name))
       this.awesomplete.list = this.autocompleteList
     }
   },

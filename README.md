@@ -21,7 +21,7 @@ $ npm install vue-tagger --save
 ```js
 <template>
   <div class="my-component">
-    <vue-tagger :tags="tags" @tags-changed="logTags" :placeholder="'Enter a tag...'" :delimiter="','"></vue-tagger>
+    <vue-tagger :tags="tags" @change="logTags" :placeholder="'Enter a tag...'" :delimiter="','"></vue-tagger>
   </div>
 </template>
 <script>

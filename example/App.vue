@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <vue-tagger :tags="tags" @tags-changed="setCurrentTags"></vue-tagger>
+    <vue-tagger :tags="tags" @change="setCurrentTags"></vue-tagger>
     <pre><code>{{ currentTagsToJson }}</code></pre>
     <button @click="changeTags">Change Tags</button>
   </div>
@@ -45,7 +45,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.vue-tagger, pre {
+#app {
   margin: 20px;
 }
 </style>
