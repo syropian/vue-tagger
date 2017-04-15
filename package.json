@@ -5,7 +5,7 @@
   "repository": "https://github.com/syropian/vue-tagger",
   "main": "src/VueTagger.vue",
   "scripts": {
-    "build:docs": "vbuild ./docs/index.js",
+    "build:docs": "rm -rf docs && vbuild ./example/index.js && mv dist docs",
     "lint": "eslint src --ext='.js,.vue'",
     "serve": "vbuild ./docs/index.js --dev",
     "test": "ava"
