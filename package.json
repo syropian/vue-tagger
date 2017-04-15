@@ -1,6 +1,6 @@
 {
   "name": "vue-tagger",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Simple tagging component for Vue with built-in autocomplete.",
   "repository": "https://github.com/syropian/vue-tagger",
   "main": "src/VueTagger.vue",
