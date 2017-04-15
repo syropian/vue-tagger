@@ -1,7 +1,8 @@
 import Vue from 'vue/dist/vue.js'
 import test from 'ava'
-import VueTagger from '../dist/VueTagger.js'
+import VueTagger from '../src/VueTagger.vue'
 
+Vue.config.productionTip = false;
 let vm;
 
 test.beforeEach(t => {
