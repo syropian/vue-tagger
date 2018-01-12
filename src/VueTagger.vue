@@ -97,7 +97,7 @@ export default {
       }
     },
     getTagIndexByName (name) {
-      return this.tagList.findIndex(tag => tag.name.trim().toLowerCase() === name.trim().toLowerCase())
+      return this.tagList.findIndex(tag => Array.isArray(tag.name) ? tag.name[1].trim().toLowerCase() : tag.name.trim().toLowerCase() === name.trim().toLowerCase())
     },
     addTag (name) {
       const tagIndex = this.getTagIndexByName(name)
